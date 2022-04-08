@@ -1,0 +1,295 @@
+ 
+ 
+//需要添加自定义Exception类，避免输出的成绩小于0和大于100的情况
+ 
+import java.awt.Frame;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import javax.swing.Box;
+import java.awt.*;
+import java.awt.event.*;
+ 
+public class fifth{
+  public static void main(String[] args){
+    // showFrame outerClass = new showFrame();
+    // showFrame.Statics  innerCLass =  outerClass.new Statcis();
+ 
+    new showFrame();
+  }
+}
+ 
+class Student implements Comparable<Student> {
+ 
+    // 学生的基本属性
+    String name;
+    float Math;
+    float Java;
+    float English;
+  
+    // 构造函数
+    public Student(String name, float M, float J, float E) {
+      this.name = name;
+      Math = M;
+      Java = J;
+      English = E;
+    }
+  
+    // 重载构造函数，直接传入String类型数据
+    public Student(String name, String M, String J, String E) {
+      this.name = name;
+      Math = Float.parseFloat(M);
+      Java = Float.parseFloat(J);
+      English = Float.parseFloat(E);
+    }
+  
+    public String getName() {
+      return this.name;
+    }
+  
+    public float getMath() {
+      return this.Math;
+    }
+  
+    public float getJava() {
+      return this.Java;
+    }
+  
+    public float getEnglish() {
+      return this.English;
+    }
+  
+    @Override
+    public int compareTo(Student o) {
+      // TODO Auto-generated method stub
+      return (int)(this.getMath()-o.getMath());
+    }
+  }
+ 
+  
+// GUI界面类，需要在该类中实现
+class showFrame extends Frame {
+  private Button ok = new Button("确认");
+  private Button statics = new Button("统计结果");
+  private TextField tf1 = new TextField(20);
+  private TextField tf2 = new TextField(20);
+  private TextField tf3 = new TextField(20);
+  private TextField tf4 = new TextField(20);
+  private Label lab1 = new Label("姓名");
+  private Label lab2 = new Label("数学成绩");
+  private Label lab3 = new Label("Java成绩");
+  private Label lab4 = new Label("英语成绩");
+ 
+  String name;
+  String Math;
+  String Java;
+  String English;
+ 
+  public showFrame() {
+    super("添加学生信息");
+    // 添加关闭窗口的监听器类
+ 
+    Box b1 = Box.createHorizontalBox();
+    b1.add(ok);
+    b1.add(statics);
+    this.add(b1, BorderLayout.SOUTH);
+    Box b2 = Box.createHorizontalBox();
+    b2.add(lab1);
+    b2.add(tf1);
+    Box b3 = Box.createHorizontalBox();
+    b3.add(lab2);
+    b3.add(tf2);
+    Box b4 = Box.createHorizontalBox();
+    b4.add(lab3);
+    b4.add(tf3);
+    Box b6 = Box.createHorizontalBox();
+    b6.add(lab4);
+    b6.add(tf4);
+    Box b5 = Box.createVerticalBox();
+    b5.add(b2);
+    b5.add(b3);
+    b5.add(b4);
+    b5.add(b6);
+    this.add(b5, BorderLayout.CENTER);
+    this.addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        System.exit(0);
+      }
+    });
+    tf1.addTextListener(new TextListener() {
+      public void textValueChanged(TextEvent e) {
+        name = tf1.getText();
+      }
+    });
+ 
+    // 以下成绩均为String类型
+    tf2.addTextListener(new TextListener() {
+ 
+      @Override
+      public void textValueChanged(TextEvent e) {
+        // TODO Auto-generated method stub
+        Math = tf2.getText();
+      }
+ 
+    });
+ 
+    tf3.addTextListener(new TextListener() {
+ 
+      @Override
+      public void textValueChanged(TextEvent e) {
+        // TODO Auto-generated method stub
+        Java = tf3.getText();
+      }
+ 
+    });
+ 
+    tf4.addTextListener(new TextListener() {
+ 
+      @Override
+      public void textValueChanged(TextEvent e) {
+        // TODO Auto-generated method stub
+        English = tf4.getText();
+      }
+ 
+    });
+ 
+    ok.addActionListener(new ActionListener() {
+ 
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        // TODO Auto-generated method stub
+        // 创建学生类对象
+        Student stu = new Student(name, Math, Java, English);
+        System.out.print("已将该学生成绩写入文档，可前往学生成绩.txt查看");
+        dataWriter(stu);
+        tf1.setText("");
+        tf2.setText("");
+        tf3.setText("");
+        tf4.setText("");
+      }
+ 
+    });
+ 
+    statics.addActionListener(new ActionListener(){
+ 
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        // TODO Auto-generated method stub
+        try{
+          new Statics();
+        }catch(IOException n){
+          System.err.println(n);
+          n.getStackTrace();
+        }
+        
+      }
+      
+    });
+ 
+    this.setSize(200, 200);
+    this.setVisible(true);
+  }
+ 
+  // 首先需要实现向文件之中写入数据
+  public void dataWriter(Student stu) {
+    try {
+      // 写入文件的编码格式为gbk
+      BufferedWriter bw = new BufferedWriter(new FileWriter("D:\\JavaApp\\BIBLEBLACK\\第四次作业\\学生成绩.txt", true));
+      bw.write("姓名：" + stu.name);
+      // 如何写入浮点数？？ 将其转化为string？
+      bw.write("  高数成绩为：" + Float.toString(stu.English));
+      bw.write("  Java成绩：" + Float.toString(stu.Java));
+      bw.write("  英语成绩：" + Float.toString(stu.English));
+      bw.newLine();
+      bw.flush();
+      bw.close();
+    } catch (IOException e) {
+      System.err.println(e);
+      e.getStackTrace();
+    }
+ 
+  }
+}
+ 
+//用来读取、统计和写入文件的类
+class Statics {
+  // arraylist，用于存放学生对象
+  ArrayList<Student> stuArray = new ArrayList<Student>();
+  Student stu = null;
+ 
+  public Statics() throws IOException {
+    filereader();
+    Collections.sort(stuArray);
+    Calculation();
+    for (Student stu : stuArray) {
+      filewriter(stu);
+    }
+    BufferedWriter bw2 = new BufferedWriter(new FileWriter("D:\\JavaApp\\BIBLEBLACK\\第四次作业\\统计以后的学生成绩.txt", true));
+    String str = "统计以后的高数成绩最大值为：" + max + "   最小值为：" + min + "    平均成绩为:" + average;
+    bw2.newLine();
+    bw2.write(str);
+    bw2.flush();
+    bw2.close();
+  }
+ 
+  public void filewriter(Student stu) {
+    try {
+      // 写入文件的编码格式为gbk
+      BufferedWriter bw = new BufferedWriter(new FileWriter("D:\\JavaApp\\BIBLEBLACK\\第四次作业\\统计以后的学生成绩.txt", true));
+      bw.write("姓名：" + stu.name);
+      bw.write("  高数成绩为：" + Float.toString(stu.English));
+      bw.write("  Java成绩：" + Float.toString(stu.Java));
+      bw.write("  英语成绩：" + Float.toString(stu.English));
+      bw.newLine();
+      bw.flush();
+      bw.close();
+    } catch (IOException e) {
+      System.err.println(e);
+      e.getStackTrace();
+    }
+  }
+ 
+  public void filereader() {
+    try {
+      BufferedReader br = new BufferedReader(new FileReader("D:\\JavaApp\\BIBLEBLACK\\第四次作业\\学生成绩.txt"));
+      // 读取数据以后创建学生类对象,问题是如何把都进来的数据转化为对象呢？
+      String line;
+      while ((line = br.readLine()) != null) {
+        // 利用spilt方法提出读取出来的String中无关字符
+        String[] retval = line.split("姓名：|  高数成绩为：|  Java成绩：|  英语成绩：");
+        stu = new Student(retval[1], retval[2], retval[3], retval[4]); // tnnd,这东西居然是从1开始索引的
+        stuArray.add(stu);
+      }
+      br.close();
+    } catch (IOException e) {
+      System.err.println(e);
+      e.getStackTrace();
+    }
+  }
+ 
+  // 计算所有学生成绩的平均值最大值最小值
+  private float sum = 0.f;
+  private float average = 0.f;
+  private float max = 0.f;
+  private float min = 100.f;
+  private float i = 0.f;
+ 
+  public void Calculation() {
+    // 统计多门课程较为繁琐，此处仅对高数成绩进行统计，其他科目的统计与以下算法基本相同，不再赘述
+    for (Student stu : stuArray) {
+      sum += (float) stu.getMath();
+      i++;
+      if (stu.getMath() >= max) {
+        max = stu.getMath();
+      }
+      if (stu.getMath() <= min) {
+        min = stu.getMath();
+      }
+    }
+    average = (float) sum / i;
+  }
+}
