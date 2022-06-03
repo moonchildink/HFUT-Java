@@ -1,0 +1,4 @@
+17	30	6	Widget,blue
+1234	0	4	Whatsit
+123123	999899	98	Doohicky
+5	0	4	Thingy
